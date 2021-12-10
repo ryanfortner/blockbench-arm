@@ -38,6 +38,7 @@ jobs:
           cd $DIR/blockbench
           npm install
           sed -i "s+icon:'icon.ico'+icon:'/opt/Blockbench/icon.png'+g" ./main.js #for taskbar icon
+          sed '21,25d' ./package.json
           npx electron-builder --linux zip --arm64
           wget https://github.com/JannisX11/blockbench/releases/download/v${LATEST}/Blockbench_v${LATEST}.deb -O ../sample.deb
           dpkg-deb -R ../sample.deb ../blockbench-deb
