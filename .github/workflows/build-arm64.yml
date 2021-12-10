@@ -9,6 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
         
       - name: Setup node
         uses: actions/setup-node@v2
@@ -54,10 +56,10 @@ jobs:
           echo "DEB=$(basename blockbench*arm64.deb)" >> $GITHUB_ENV
 
       - name: Upload
-        uses: actions/checkout@v2
         run: |
           rm -rf *.deb
           mv $DEB .
+          rm -rf $DIR/blockbench
           git config user.name 'GitHub Actions'
           git config user.email 'github-actions@github.com'
           git add .
