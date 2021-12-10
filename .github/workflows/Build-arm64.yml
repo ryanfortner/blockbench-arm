@@ -34,6 +34,7 @@ jobs:
 
       - name: Build
         run: |
+          GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
           cd $DIR/blockbench
           npm install
           sed -i "s+icon:'icon.ico'+icon:'/opt/Blockbench/icon.png'+g" ./main.js #for taskbar icon
