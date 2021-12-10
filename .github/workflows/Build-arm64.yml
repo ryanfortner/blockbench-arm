@@ -27,6 +27,7 @@ jobs:
 
       - name: clone repo and checkout latest release
         run: |
+          echo "LATEST=`curl -s https://api.github.com/repos/JannisX11/blockbench/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' | tr -d 'v'`" >> $GITHUB_ENV
           LATEST=`curl -s https://api.github.com/repos/JannisX11/blockbench/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' | tr -d 'v'`
           export NODE_OPTIONS=--openssl-legacy-provider
           git clone https://github.com/JannisX11/blockbench.git
