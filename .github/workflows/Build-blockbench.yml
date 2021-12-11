@@ -1,0 +1,82 @@
+name: Build-blockbench
+
+on:
+  schedule:
+    - cron: '0 21 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+         node-version: '14'
+      
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y libarchive-tools aria2
+
+      - name: Build armhf
+        run: |
+          rm -rf ./blockbench*/
+          export version=$(curl -s https://api.github.com/repos/JannisX11/blockbench/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' | tr -d 'v')
+          git clone https://github.com/JannisX11/blockbench.git
+          cd blockbench && npm install 
+          sed -i "s+icon:'icon.ico'+icon:'/opt/Blockbench/icon.png'+g" ./main.js #for taskbar icon
+          npx electron-builder --linux zip --armv7l --publish never
+          aria2c -x 16 -s 16 --max-tries=10 --retry-wait=30 --max-file-not-found=5 --http-no-cache=true --allow-overwrite=true --auto-file-renaming=false --console-log-level=error --show-console-readout=false --summary-interval=0 https://github.com/JannisX11/blockbench/releases/download/v4.0.5/Blockbench_"$version".deb -o ../sample.deb
+          #wget https://github.com/JannisX11/blockbench/releases/download/v4.0.5/Blockbench_"$version".deb -O ../sample.deb
+          dpkg-deb -R ../sample.deb ../blockbench-deb
+          rm -f ../sample.deb
+          cp dist/Blockbench*.zip ../blockbench-deb/opt
+          rm -rf ../blockbench-deb/opt/Blockbench
+          cd ../blockbench-deb/opt
+          unzip ./*zip -d Blockbench
+          rm *zip
+          cp ../../blockbench/icon.png ./Blockbench
+          rm -rf ../usr/share/icons
+          sed -i s+Icon=blockbench+Icon=/opt/Blockbench/icon.png+g ../usr/share/applications/*
+          sed -i s+Categories=3DGraphics+Categories=Development+g ../usr/share/applications/*
+          sed -i 's/amd64/armhf/g' ../DEBIAN/control
+          cd ../..
+          dpkg-deb -b ./blockbench-deb blockbench_"$version"_armhf.deb
+
+      - name: Build arm64
+        run: |
+          rm -rf ./blockbench*/
+          export version=$(curl -s https://api.github.com/repos/JannisX11/blockbench/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' | tr -d 'v')
+          git clone https://github.com/JannisX11/blockbench.git
+          cd blockbench && npm install 
+          sed -i "s+icon:'icon.ico'+icon:'/opt/Blockbench/icon.png'+g" ./main.js #for taskbar icon
+          npx electron-builder --linux zip --arm64 --publish never
+          aria2c -x 16 -s 16 --max-tries=10 --retry-wait=30 --max-file-not-found=5 --http-no-cache=true --allow-overwrite=true --auto-file-renaming=false --console-log-level=error --show-console-readout=false --summary-interval=0 https://github.com/JannisX11/blockbench/releases/download/v4.0.5/Blockbench_"$version".deb -o ../sample.deb
+          #wget https://github.com/JannisX11/blockbench/releases/download/v4.0.5/Blockbench_4.0.5.deb -O ../sample.deb
+          dpkg-deb -R ../sample.deb ../blockbench-deb
+          rm -f ../sample.deb
+          cp dist/Blockbench*.zip ../blockbench-deb/opt
+          rm -rf ../blockbench-deb/opt/Blockbench
+          cd ../blockbench-deb/opt
+          unzip ./*zip -d Blockbench
+          rm *zip
+          cp ../../blockbench/icon.png ./Blockbench
+          rm -rf ../usr/share/icons
+          sed -i s+Icon=blockbench+Icon=/opt/Blockbench/icon.png+g ../usr/share/applications/*
+          sed -i s+Categories=3DGraphics+Categories=Development+g ../usr/share/applications/*
+          sed -i 's/amd64/arm64/g' ../DEBIAN/control
+          cd ../..
+          dpkg-deb -b ./blockbench-deb blockbench_"$version"_arm64.deb
+
+      - name: Upload
+        run: |
+          rm -rf ./blockbench*/
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add .
+          git commit -m "Upload blockbench v$(curl -s https://api.github.com/repos/JannisX11/blockbench/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' | tr -d 'v')" 
+          git push
