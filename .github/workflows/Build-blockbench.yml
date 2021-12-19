@@ -26,6 +26,8 @@ jobs:
         run: |
           rm -rf ./blockbench*/
           export version=$(curl -s https://api.github.com/repos/JannisX11/blockbench/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' | tr -d 'v')
+          export current=$(cat current.txt)
+          [ "$current" == "$version" ] && exit 0
           git clone https://github.com/JannisX11/blockbench.git
           cd blockbench && npm install 
           sed -i "s+icon:'icon.ico'+icon:'/opt/Blockbench/icon.png'+g" ./main.js #for taskbar icon
