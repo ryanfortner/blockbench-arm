@@ -32,7 +32,7 @@ jobs:
           cd blockbench && npm install 
           sed -i "s+icon:'icon.ico'+icon:'/opt/Blockbench/icon.png'+g" ./main.js #for taskbar icon
           npx electron-builder --linux zip --armv7l --publish never
-          aria2c -x 16 -s 16 --max-tries=10 --retry-wait=30 --max-file-not-found=5 --http-no-cache=true --allow-overwrite=true --auto-file-renaming=false --console-log-level=error --show-console-readout=false --summary-interval=0 https://github.com/JannisX11/blockbench/releases/download/v4.0.5/Blockbench_"$version".deb -o ../sample.deb
+          aria2c -x 16 -s 16 --max-tries=10 --retry-wait=30 --max-file-not-found=5 --http-no-cache=true --allow-overwrite=true --auto-file-renaming=false --console-log-level=error --show-console-readout=false --summary-interval=0 https://github.com/JannisX11/blockbench/releases/download/v"$version"/Blockbench_"$version".deb -o ../sample.deb
           #wget https://github.com/JannisX11/blockbench/releases/download/v4.0.5/Blockbench_"$version".deb -O ../sample.deb
           dpkg-deb -R ../sample.deb ../blockbench-deb
           rm -f ../sample.deb
@@ -59,7 +59,7 @@ jobs:
           cd blockbench && npm install 
           sed -i "s+icon:'icon.ico'+icon:'/opt/Blockbench/icon.png'+g" ./main.js #for taskbar icon
           npx electron-builder --linux zip --arm64 --publish never
-          aria2c -x 16 -s 16 --max-tries=10 --retry-wait=30 --max-file-not-found=5 --http-no-cache=true --allow-overwrite=true --auto-file-renaming=false --console-log-level=error --show-console-readout=false --summary-interval=0 https://github.com/JannisX11/blockbench/releases/download/v4.0.5/Blockbench_"$version".deb -o ../sample.deb
+          aria2c -x 16 -s 16 --max-tries=10 --retry-wait=30 --max-file-not-found=5 --http-no-cache=true --allow-overwrite=true --auto-file-renaming=false --console-log-level=error --show-console-readout=false --summary-interval=0 https://github.com/JannisX11/blockbench/releases/download/v"$version"/Blockbench_"$version".deb -o ../sample.deb
           #wget https://github.com/JannisX11/blockbench/releases/download/v4.0.5/Blockbench_4.0.5.deb -O ../sample.deb
           dpkg-deb -R ../sample.deb ../blockbench-deb
           rm -f ../sample.deb
