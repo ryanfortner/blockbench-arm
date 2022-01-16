@@ -22,6 +22,10 @@ jobs:
           sudo apt update
           sudo apt install -y libarchive-tools aria2
 
+      - name: Remove old debs
+        run: |
+          rm -rf blockbench*.deb
+
       - name: Build armhf
         run: |
           rm -rf ./blockbench*/
