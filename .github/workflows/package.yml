@@ -80,6 +80,11 @@ jobs:
           cd ../..
           dpkg-deb -b ./blockbench-deb blockbench_"$version"_arm64.deb
 
+      - name: Create symlinks
+        run: |
+          ln -fs "$(find . -name '*arm64.deb' -type f -printf '%P\n' -quit)" blockbench-arm64-latest.deb
+          ln -fs "$(find . -name '*armhf.deb' -type f -printf '%P\n' -quit)" blockbench-armhf-latest.deb
+
       - name: Upload
         run: |
           rm -rf ./blockbench*/
