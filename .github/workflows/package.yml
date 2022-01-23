@@ -82,10 +82,10 @@ jobs:
 
       - name: Create symlinks
         run: |
-
           export version=$(curl -s https://api.github.com/repos/JannisX11/blockbench/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' | tr -d 'v')
           export current=$(cat current.txt)
           [ "$current" == "$version" ] && exit 0
+          rm -rf ./*latest.deb
           ln -fs "$(find . -name '*arm64.deb' -type f -printf '%P\n' -quit)" blockbench-arm64-latest.deb
           ln -fs "$(find . -name '*armhf.deb' -type f -printf '%P\n' -quit)" blockbench-armhf-latest.deb
 
