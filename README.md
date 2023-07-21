@@ -1,2 +1,2 @@
 # blockbench-arm
-arm builds of blockbench
+ARM builds of blockbench
